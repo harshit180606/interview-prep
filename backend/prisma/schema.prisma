@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User{
+  id          Int         @id @default(autoincrement())
+  googleId    String      @unique
+  name        String
+  email       String      @unique
+  createdAt   DateTime    @default(now())
+  interview   Interview[]
+}
+
+model Interview{
+  id          Int         @id @default(autoincrement())
+  userId      Int 
+  category    String
+  difficulty  String
+  questions   Json
+  answers     Json
+  feedback    Json
+  score       Float
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields : [userId] , references : [id] , onDelete : Cascade)
+}
