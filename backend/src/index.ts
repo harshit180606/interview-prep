@@ -4,6 +4,7 @@ import './config/passport'
 import passport from 'passport'
 import authRoutes from './routes/auth'
 import userRoutes from './routes/user'
+import interviewRoutes from './routes/interview'
 
 const port: number = 5000
 
@@ -14,6 +15,7 @@ app.use(passport.initialize())
 
 app.use('/auth', authRoutes)
 app.use('/user', userRoutes) 
+app.use('/interview', interviewRoutes)
 
 app.get('/health', (req, res) => {
   res.status(200).json({ message: 'API is running' })
