@@ -14,7 +14,9 @@ export default function Interview() {
     const [currentIndex , setCurrentIndex]=useState(0);
     const [score , setScore]=useState<number[]>([]);
     const [loading , setLoading]=useState(false);
-    
+    const [answered , setAnswered]=useState(false)
+    const [finishing, setFinishing] = useState(false)
+
     const startInterview = async () => {
         if(!category || !difficulty) {
             alert('All fields are required')
@@ -53,8 +55,13 @@ export default function Interview() {
             const newFeedback = [...feedback];
             newFeedback[currentIndex] = qFeedback;
             setFeedback(newFeedback);
-            setAnswers([...answers, currentAnswer]);
+            setAnswers(prev => {
+                const updated = [...prev]
+                updated[currentIndex] = currentAnswer
+                return updated
+            })
             setCurrentAnswer('');
+            setAnswered(true);
         }
         catch(err) {
             console.error('Error submitting answer:', err);
@@ -65,6 +72,8 @@ export default function Interview() {
     }
 
     const finishInterview = async () => {
+        if(finishing) return  
+        setFinishing(true)
         try {
             await api.post('/interview/save', {
             category,
@@ -74,9 +83,10 @@ export default function Interview() {
             feedback,
             scores: score
             })
-            setState('complete');
+            setState('complete')
         } catch(err) {
             console.error('Error saving interview:', err)
+            setFinishing(false)  
         }
     }
 
@@ -133,25 +143,30 @@ export default function Interview() {
                 onChange={e => setCurrentAnswer(e.target.value)}
             />
             <button 
-                onClick={submitAnswer}
-                className="mt-4 w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition font-semibold"
-            >
-            {loading ? 'Evaluating...' : 'Submit Answer'}
+                onClick={submitAnswer} 
+                disabled={answered || loading}
+                className="mt-4 w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                {loading ? 'Evaluating...' : answered ? 'Answer Submitted' : 'Submit Answer'}
             </button>
             {feedback[currentIndex] && (
                 <div className="mt-4 bg-white p-6 rounded-2xl shadow border-l-4 border-purple-500">
-                <p className="font-bold text-purple-700 mb-2">Feedback</p>
-                <p className="text-gray-700 mb-3">{feedback[currentIndex]}</p>
-                <p className="font-semibold text-gray-800">Score: {score[currentIndex]}/10</p>
-                <button 
-                    onClick={() => {
-                    if(currentIndex < 4) setCurrentIndex(currentIndex + 1)
-                    else finishInterview()
-                    }}
-                    className="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition font-semibold"
-                >
-                    {currentIndex < 4 ? 'Next Question' : 'Finish Interview'}
-                </button>
+                    <p className="font-bold text-purple-700 mb-2">Feedback</p>
+                    <p className="text-gray-700 mb-3">{feedback[currentIndex]}</p>
+                    <p className="font-semibold text-gray-800">Score: {score[currentIndex]}/10</p>
+                    <button 
+                        onClick={() => {
+                            if(currentIndex < 4) {
+                            setCurrentIndex(currentIndex + 1)
+                            setAnswered(false)
+                            }
+                            else finishInterview()
+                        }}
+                        disabled={finishing}
+                        className="mt-4 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                        {finishing ? 'Saving...' : currentIndex < 4 ? 'Next Question' : 'Finish Interview'}
+                    </button>
                 </div>
             )}
             </div>

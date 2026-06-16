@@ -2,6 +2,7 @@ import express from 'express';
 import { generateQuestions , evaluateAnswer} from '../services/gemini';
 import prisma from '../lib/prisma';
 import authMiddleware from '../middleware/auth';
+import redis from '../lib/redis';
 
 const router = express.Router();
 
@@ -52,6 +53,7 @@ router.post('/save', authMiddleware, async (req, res) => {
         score: avgScore
       }
     })
+    await redis.del(`dashboard:${(req as any).userId}`)
     res.status(201).json(interview)
   } catch(error) {
     console.error('Error saving interview:', error)
