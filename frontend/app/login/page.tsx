@@ -17,7 +17,7 @@ export default function LoginPage() {
         <h1 className="text-4xl font-bold text-purple-700 mb-2">Interview Prep</h1>
         <p className="text-gray-500 mb-8">Prepare smarter. Get hired faster.</p>
         <a 
-          href="http://localhost:5000/auth/google"
+          href="https://interview-prep-backend-ro35.onrender.com/auth/google"
           className="flex items-center justify-center gap-3 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition font-semibold"
         >
           Login with Google
