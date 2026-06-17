@@ -25,7 +25,13 @@ jobs:
       - name: Debug
         working-directory: ./backend
         run: ls node_modules/.bin | grep jest
-        
+
+      - name: Generate Prisma Client
+        working-directory: ./backend
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npx prisma generate
+
       - name: Run tests
         working-directory: ./backend
         env:
