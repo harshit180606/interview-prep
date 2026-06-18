@@ -8,7 +8,7 @@ import interviewRoutes from './routes/interview'
 
 const app = express()
 app.use(express.json())
-app.use(cors({ origin: 'https://interview-prep-avyaya.vercel.app' }))
+app.use(cors({ origin: 'https://interview-prep-eta-eight.vercel.app' }))
 app.use(passport.initialize())
 
 app.use('/auth', authRoutes)

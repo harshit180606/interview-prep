@@ -18,7 +18,7 @@ router.get('/google/callback',
       process.env.JWT_SECRET!,
       { expiresIn: '7d' }
     )
-    res.redirect(`https://interview-prep-avyaya.vercel.app/dashboard?token=${token}`)
+    res.redirect(`https://interview-prep-eta-eight.vercel.app/dashboard?token=${token}`)
   }
 )
 
